@@ -24,6 +24,12 @@ static const CGFloat kMargin = 30;
 
 @implementation ZKScanViewController
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self resumeAnimation];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
