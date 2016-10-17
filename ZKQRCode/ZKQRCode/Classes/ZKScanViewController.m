@@ -1,16 +1,14 @@
 //
-//  ZKMainViewController.m
+//  ZKScanViewController.m
 //  ZKQRCode
 //
 //  Created by ZK on 16/10/17.
 //  Copyright © 2016年 ZK. All rights reserved.
 //
 
-#import "ZKMainViewController.h"
-#import <AVFoundation/AVFoundation.h>
-#import "UIView+ZKCommon.h"
+#import "ZKScanViewController.h"
 
-@interface ZKMainViewController ()<UIAlertViewDelegate,AVCaptureMetadataOutputObjectsDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
+@interface ZKScanViewController ()<UIAlertViewDelegate,AVCaptureMetadataOutputObjectsDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
     
 }
 
@@ -24,7 +22,7 @@
 static const CGFloat kBorderW = 100;
 static const CGFloat kMargin = 30;
 
-@implementation ZKMainViewController
+@implementation ZKScanViewController
 
 - (void)viewDidLoad
 {
@@ -32,6 +30,7 @@ static const CGFloat kMargin = 30;
     
     //这个属性必须打开否则返回的时候会出现黑边
     self.view.clipsToBounds=YES;
+    self.navigationController.navigationBar.hidden = YES;
     //1.遮罩
     [self setupMaskView];
     //2.下边栏
