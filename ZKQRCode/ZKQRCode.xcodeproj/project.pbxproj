@@ -27,7 +27,8 @@
 		584245CA1DB611600003BBD6 /* qrspec.c in Sources */ = {isa = PBXBuildFile; fileRef = 584245BF1DB611600003BBD6 /* qrspec.c */; };
 		584245CB1DB611600003BBD6 /* rscode.c in Sources */ = {isa = PBXBuildFile; fileRef = 584245C11DB611600003BBD6 /* rscode.c */; };
 		584245CC1DB611600003BBD6 /* split.c in Sources */ = {isa = PBXBuildFile; fileRef = 584245C31DB611600003BBD6 /* split.c */; };
-		584245CE1DB61D790003BBD6 /* text.png in Resources */ = {isa = PBXBuildFile; fileRef = 584245CD1DB61D790003BBD6 /* text.png */; };
+		584245D21DB62F480003BBD6 /* ZKCodeGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245D11DB62F480003BBD6 /* ZKCodeGenerator.m */; };
+		584245D51DB631E30003BBD6 /* UIImage+ZKAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245D41DB631E30003BBD6 /* UIImage+ZKAdd.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,7 +92,10 @@
 		584245C21DB611600003BBD6 /* rscode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rscode.h; sourceTree = "<group>"; };
 		584245C31DB611600003BBD6 /* split.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = split.c; sourceTree = "<group>"; };
 		584245C41DB611600003BBD6 /* split.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = split.h; sourceTree = "<group>"; };
-		584245CD1DB61D790003BBD6 /* text.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = text.png; sourceTree = "<group>"; };
+		584245D01DB62F480003BBD6 /* ZKCodeGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZKCodeGenerator.h; sourceTree = "<group>"; };
+		584245D11DB62F480003BBD6 /* ZKCodeGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZKCodeGenerator.m; sourceTree = "<group>"; };
+		584245D31DB631E30003BBD6 /* UIImage+ZKAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ZKAdd.h"; sourceTree = "<group>"; };
+		584245D41DB631E30003BBD6 /* UIImage+ZKAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ZKAdd.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,10 +189,10 @@
 			isa = PBXGroup;
 			children = (
 				584245A81DB4CEF40003BBD6 /* ZKMainViewController.h */,
-				584245CD1DB61D790003BBD6 /* text.png */,
 				584245A91DB4CEF40003BBD6 /* ZKMainViewController.m */,
 				584245921DB4C1660003BBD6 /* ZKScanViewController.h */,
 				584245931DB4C1660003BBD6 /* ZKScanViewController.m */,
+				584245CF1DB62F190003BBD6 /* ZKQRImageGenerator */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -247,6 +251,17 @@
 				584245C41DB611600003BBD6 /* split.h */,
 			);
 			path = libqrencode;
+			sourceTree = "<group>";
+		};
+		584245CF1DB62F190003BBD6 /* ZKQRImageGenerator */ = {
+			isa = PBXGroup;
+			children = (
+				584245D01DB62F480003BBD6 /* ZKCodeGenerator.h */,
+				584245D11DB62F480003BBD6 /* ZKCodeGenerator.m */,
+				584245D31DB631E30003BBD6 /* UIImage+ZKAdd.h */,
+				584245D41DB631E30003BBD6 /* UIImage+ZKAdd.m */,
+			);
+			path = ZKQRImageGenerator;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -358,7 +373,6 @@
 			files = (
 				5842456E1DB4C0CF0003BBD6 /* LaunchScreen.storyboard in Resources */,
 				5842456B1DB4C0CF0003BBD6 /* Assets.xcassets in Resources */,
-				584245CE1DB61D790003BBD6 /* text.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,6 +398,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				584245C81DB611600003BBD6 /* qrencode.c in Sources */,
+				584245D21DB62F480003BBD6 /* ZKCodeGenerator.m in Sources */,
 				584245B31DB5C9410003BBD6 /* ZKConfig.m in Sources */,
 				584245C91DB611600003BBD6 /* qrinput.c in Sources */,
 				584245631DB4C0CF0003BBD6 /* AppDelegate.m in Sources */,
@@ -392,6 +407,7 @@
 				584245AA1DB4CEF40003BBD6 /* ZKMainViewController.m in Sources */,
 				584245601DB4C0CF0003BBD6 /* main.m in Sources */,
 				584245C61DB611600003BBD6 /* mask.c in Sources */,
+				584245D51DB631E30003BBD6 /* UIImage+ZKAdd.m in Sources */,
 				584245AF1DB5C0140003BBD6 /* UIImage+Common.m in Sources */,
 				584245A11DB4C6F20003BBD6 /* UIView+ZKCommon.m in Sources */,
 				584245C51DB611600003BBD6 /* bitstream.c in Sources */,
