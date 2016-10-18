@@ -17,6 +17,8 @@
 		584245A01DB4C6F20003BBD6 /* UIView+AutoLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 5842459D1DB4C6F20003BBD6 /* UIView+AutoLayout.m */; };
 		584245A11DB4C6F20003BBD6 /* UIView+ZKCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 5842459F1DB4C6F20003BBD6 /* UIView+ZKCommon.m */; };
 		584245AA1DB4CEF40003BBD6 /* ZKMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245A91DB4CEF40003BBD6 /* ZKMainViewController.m */; };
+		584245AF1DB5C0140003BBD6 /* UIImage+Common.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245AE1DB5C0140003BBD6 /* UIImage+Common.m */; };
+		584245B31DB5C9410003BBD6 /* ZKConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245B11DB5C9410003BBD6 /* ZKConfig.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +61,11 @@
 		584245A81DB4CEF40003BBD6 /* ZKMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZKMainViewController.h; sourceTree = "<group>"; };
 		584245A91DB4CEF40003BBD6 /* ZKMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZKMainViewController.m; sourceTree = "<group>"; };
 		584245AB1DB4CF700003BBD6 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		584245AD1DB5C0140003BBD6 /* UIImage+Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Common.h"; sourceTree = "<group>"; };
+		584245AE1DB5C0140003BBD6 /* UIImage+Common.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Common.m"; sourceTree = "<group>"; };
+		584245B01DB5C9410003BBD6 /* ZKConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZKConfig.h; sourceTree = "<group>"; };
+		584245B11DB5C9410003BBD6 /* ZKConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZKConfig.m; sourceTree = "<group>"; };
+		584245B21DB5C9410003BBD6 /* MacroToolHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacroToolHeader.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +169,7 @@
 		5842459A1DB4C6E60003BBD6 /* ThirtPart */ = {
 			isa = PBXGroup;
 			children = (
+				584245AC1DB5C0090003BBD6 /* Tool */,
 				5842459B1DB4C6F20003BBD6 /* ViewLayout */,
 			);
 			path = ThirtPart;
@@ -176,6 +184,18 @@
 				5842459F1DB4C6F20003BBD6 /* UIView+ZKCommon.m */,
 			);
 			path = ViewLayout;
+			sourceTree = "<group>";
+		};
+		584245AC1DB5C0090003BBD6 /* Tool */ = {
+			isa = PBXGroup;
+			children = (
+				584245B01DB5C9410003BBD6 /* ZKConfig.h */,
+				584245B11DB5C9410003BBD6 /* ZKConfig.m */,
+				584245B21DB5C9410003BBD6 /* MacroToolHeader.h */,
+				584245AD1DB5C0140003BBD6 /* UIImage+Common.h */,
+				584245AE1DB5C0140003BBD6 /* UIImage+Common.m */,
+			);
+			path = Tool;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -311,10 +331,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				584245B31DB5C9410003BBD6 /* ZKConfig.m in Sources */,
 				584245631DB4C0CF0003BBD6 /* AppDelegate.m in Sources */,
 				584245A01DB4C6F20003BBD6 /* UIView+AutoLayout.m in Sources */,
 				584245AA1DB4CEF40003BBD6 /* ZKMainViewController.m in Sources */,
 				584245601DB4C0CF0003BBD6 /* main.m in Sources */,
+				584245AF1DB5C0140003BBD6 /* UIImage+Common.m in Sources */,
 				584245A11DB4C6F20003BBD6 /* UIView+ZKCommon.m in Sources */,
 				584245951DB4C1660003BBD6 /* ZKScanViewController.m in Sources */,
 			);

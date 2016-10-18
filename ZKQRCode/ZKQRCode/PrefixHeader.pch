@@ -11,5 +11,8 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import "UIView+ZKCommon.h"
+#import "UIImage+Common.h"
+#import "MacroToolHeader.h"
+#import "ZKConfig.h"
 
 #endif /* PrefixHeader_pch */
