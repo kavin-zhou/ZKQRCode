@@ -8,168 +8,161 @@
 
 #import "ZKScanViewController.h"
 
-@interface ZKScanViewController ()<UIAlertViewDelegate,AVCaptureMetadataOutputObjectsDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
-    
-}
+#define HollowRect   (CGRect){kLeftRightMargin, 120.f*WindowZoomScale, SCREEN_WIDTH-kLeftRightMargin*2, SCREEN_WIDTH-kLeftRightMargin*2}
+
+@interface ZKScanViewController ()<UIAlertViewDelegate,AVCaptureMetadataOutputObjectsDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (nonatomic, strong) AVCaptureSession *session;
-@property (nonatomic, weak)   UIView *maskView;
-@property (nonatomic, strong) UIView *scanWindow;
-@property (nonatomic, strong) UIImageView *scanNetImageView;
+@property (nonatomic, strong) UIView           *maskView;
+@property (nonatomic, strong) UIView           *scanWindow;
+@property (nonatomic, strong) UIImageView      *scanNetImageView;
 
 @end
 
-static const CGFloat kBorderW = 100;
-static const CGFloat kMargin = 30;
+static const CGFloat kLeftRightMargin = 40.f;
 
 @implementation ZKScanViewController
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    [self resumeAnimation];
-}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    //这个属性必须打开否则返回的时候会出现黑边
-    self.view.clipsToBounds=YES;
-    self.navigationController.navigationBar.hidden = YES;
-    //1.遮罩
-    [self setupMaskView];
-    //2.下边栏
-    [self setupBottomBar];
-    //3.提示文本
-    [self setupTipTitleView];
-    //4.顶部导航
-    [self setupNavView];
-    //5.扫描区域
-    [self setupScanWindowView];
-    //6.开始动画
+    [self setupUI];
     [self beginScanning];
-    
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(resumeAnimation) name:@"EnterForeground" object:nil];
 }
 
--(void)setupTipTitleView
+- (void)viewWillAppear:(BOOL)animated
 {
-    //1.补充遮罩
+    [super viewWillAppear:animated];
+    // 开始扫描动画
+    [self resumeAnimation];
+}
+
+- (void)setupUI
+{
+    self.navigationController.navigationBar.hidden = YES;
     
-    UIView*mask=[[UIView alloc]initWithFrame:CGRectMake(0, _maskView.top+_maskView.height, self.view.width, kBorderW)];
-    mask.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:0.7];
-    [self.view addSubview:mask];
-    
-    //2.操作提示
-    UILabel * tipLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.height*0.9-kBorderW*2, self.view.bounds.size.width, kBorderW)];
-    tipLabel.text = @"将取景框对准二维码，即可自动扫描";
-    tipLabel.textColor = [UIColor whiteColor];
-    tipLabel.textAlignment = NSTextAlignmentCenter;
-    tipLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    tipLabel.numberOfLines = 2;
-    tipLabel.font=[UIFont systemFontOfSize:12];
-    tipLabel.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:tipLabel];
-    
+    [self setupMaskView];
+    [self setupBottomBar];
+    [self setupNavView];
+    [self setupScanWindowView];
 }
 
 -(void)setupNavView
 {
-    //1.返回
+    UIView *navBar = [[UIView alloc] init];
+    [self.view addSubview:navBar];
+    navBar.frame = (CGRect){0, 30.f, SCREEN_WIDTH, 64.f};
     
-    UIButton *backBtn=[UIButton buttonWithType:UIButtonTypeCustom];
-    backBtn.frame = CGRectMake(20, 30, 25, 25);
-    [backBtn setBackgroundImage:[UIImage imageNamed:@"qrcode_scan_titlebar_back_nor"] forState:UIControlStateNormal];
-    backBtn.contentMode=UIViewContentModeScaleAspectFit;
+    UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [navBar addSubview:backBtn];
+    backBtn.left = 20.f;
+    backBtn.size = (CGSize){navBar.height, navBar.height};
+    [backBtn setImage:[UIImage imageNamed:@"qrcode_scan_titlebar_back_nor"] forState:UIControlStateNormal];
     [backBtn addTarget:self action:@selector(disMiss) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:backBtn];
-    
-    //2.相册
     
     UIButton * albumBtn=[UIButton buttonWithType:UIButtonTypeCustom];
-    albumBtn.frame = CGRectMake(0, 0, 35, 49);
-    albumBtn.center=CGPointMake(self.view.width/2, 20+49/2.0);
-    [albumBtn setBackgroundImage:[UIImage imageNamed:@"qrcode_scan_btn_photo_down"] forState:UIControlStateNormal];
-    albumBtn.contentMode=UIViewContentModeScaleAspectFit;
+    [navBar addSubview:albumBtn];
+    albumBtn.size = (CGSize){48.f, navBar.height};
+    albumBtn.centerX = navBar.centerX;
+    [albumBtn setImage:[UIImage imageNamed:@"qrcode_scan_btn_photo_down"] forState:UIControlStateNormal];
+    albumBtn.contentMode = UIViewContentModeCenter;
     [albumBtn addTarget:self action:@selector(myAlbum) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:albumBtn];
-    
-    //3.闪光灯
     
     UIButton * flashBtn=[UIButton buttonWithType:UIButtonTypeCustom];
-    flashBtn.frame = CGRectMake(self.view.width-55,20, 35, 49);
-    [flashBtn setBackgroundImage:[UIImage imageNamed:@"qrcode_scan_btn_flash_down"] forState:UIControlStateNormal];
-    flashBtn.contentMode=UIViewContentModeScaleAspectFit;
+    [navBar addSubview:flashBtn];
+    flashBtn.size = albumBtn.size;
+    flashBtn.right = SCREEN_WIDTH-20.f;
+    [flashBtn setImage:[UIImage imageNamed:@"qrcode_scan_btn_flash_down"] forState:UIControlStateNormal];
+    flashBtn.contentMode = UIViewContentModeScaleAspectFit;
     [flashBtn addTarget:self action:@selector(openFlash:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:flashBtn];
-    
-    
 }
 
 - (void)setupMaskView
 {
-    UIView *mask = [[UIView alloc] init];
-    _maskView = mask;
+    _maskView = [[UIView alloc] init];
+    _maskView.backgroundColor = [UIColor clearColor];
+    _maskView.frame = [UIScreen mainScreen].bounds;
+    [self.view addSubview:_maskView];
     
-    mask.layer.borderColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.7].CGColor;
-    mask.layer.borderWidth = kBorderW;
+    // 构建镂空效果
+    UIBezierPath *path = [UIBezierPath bezierPathWithRect:_maskView.bounds];
     
-    mask.bounds = CGRectMake(0, 0, self.view.width + kBorderW + kMargin , self.view.width + kBorderW + kMargin);
-    mask.center = CGPointMake(self.view.width * 0.5, self.view.height * 0.5);
-    mask.top = 0;
+    UIBezierPath *hollowPath = [UIBezierPath bezierPathWithRect:HollowRect];
+    [path appendPath:hollowPath];
+    [path setUsesEvenOddFillRule:YES];
     
-    [self.view addSubview:mask];
+    CAShapeLayer *shapeLayer = [CAShapeLayer layer];
+    shapeLayer.path = path.CGPath;
+    shapeLayer.fillRule = kCAFillRuleEvenOdd;
+    shapeLayer.fillColor = [[UIColor blackColor] colorWithAlphaComponent:.6].CGColor;
+    
+    [_maskView.layer addSublayer:shapeLayer];
 }
 
 - (void)setupBottomBar
 {
-    //1.下边栏
-    UIView *bottomBar = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height * 0.9, self.view.width, self.view.height * 0.1)];
-    bottomBar.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
-    
+    UIView *bottomBar = [[UIView alloc] init];
+    bottomBar.backgroundColor = [UIColor clearColor];
+    bottomBar.size = (CGSize){SCREEN_WIDTH, 100.f};
+    bottomBar.top = CGRectGetMaxY(HollowRect)+25.f;
     [self.view addSubview:bottomBar];
     
-    //2.我的二维码
-    UIButton * myCodeBtn=[UIButton buttonWithType:UIButtonTypeCustom];
-    myCodeBtn.frame = CGRectMake(0,0, self.view.height * 0.1*35/49, self.view.height * 0.1);
-    myCodeBtn.center=CGPointMake(self.view.width/2, self.view.height * 0.1/2);
-    [myCodeBtn setImage:[UIImage imageNamed:@"qrcode_scan_btn_myqrcode_down"] forState:UIControlStateNormal];
+    UILabel *tipLabel = [[UILabel alloc] init];
+    [bottomBar addSubview:tipLabel];
+    tipLabel.textAlignment = NSTextAlignmentCenter;
+    tipLabel.font = [UIFont systemFontOfSize:AutoFitFontSize(13)];
+    tipLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:.8];
+    tipLabel.text = @"放入框内, 自动扫描";
+    tipLabel.size = (CGSize){bottomBar.width, 30.f};
     
-    myCodeBtn.contentMode=UIViewContentModeScaleAspectFit;
-    
-    [myCodeBtn addTarget:self action:@selector(myCode) forControlEvents:UIControlEventTouchUpInside];
+    UIButton *myCodeBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     [bottomBar addSubview:myCodeBtn];
-    
-    
+    [myCodeBtn setTitle:@"我的二维码" forState:UIControlStateNormal];
+    [myCodeBtn setTitleColor:RGBCOLOR(20, 120, 227) forState:UIControlStateNormal];
+    myCodeBtn.titleLabel.font = [UIFont systemFontOfSize:AutoFitFontSize(15)];
+    myCodeBtn.size = (CGSize){100.f, 30.f};
+    myCodeBtn.centerX = bottomBar.centerX;
+    myCodeBtn.top = CGRectGetMaxY(tipLabel.frame)+5.f;
+    [myCodeBtn addTarget:self action:@selector(myCodeBtnClick) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)setupScanWindowView
 {
-    CGFloat scanWindowH = self.view.width - kMargin * 2;
-    CGFloat scanWindowW = self.view.width - kMargin * 2;
-    _scanWindow = [[UIView alloc] initWithFrame:CGRectMake(kMargin, kBorderW, scanWindowW, scanWindowH)];
+    _scanWindow = [[UIView alloc] init];
     _scanWindow.clipsToBounds = YES;
     [self.view addSubview:_scanWindow];
+    _scanWindow.frame = HollowRect;
     
-    _scanNetImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"scan_net"]];
-    CGFloat buttonWH = 18;
-    
-    UIButton *topLeft = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, buttonWH, buttonWH)];
-    [topLeft setImage:[UIImage imageNamed:@"scan_1"] forState:UIControlStateNormal];
+    UIImageView *topLeft = [[UIImageView alloc] init];
     [_scanWindow addSubview:topLeft];
-    
-    UIButton *topRight = [[UIButton alloc] initWithFrame:CGRectMake(scanWindowW - buttonWH, 0, buttonWH, buttonWH)];
-    [topRight setImage:[UIImage imageNamed:@"scan_2"] forState:UIControlStateNormal];
+    topLeft.image = [UIImage imageNamed:@"scan_1"];
+    topLeft.size = (CGSize){19.f, 19.f};
+
+    UIImageView *topRight = [[UIImageView alloc] init];
     [_scanWindow addSubview:topRight];
-    
-    UIButton *bottomLeft = [[UIButton alloc] initWithFrame:CGRectMake(0, scanWindowH - buttonWH, buttonWH, buttonWH)];
-    [bottomLeft setImage:[UIImage imageNamed:@"scan_3"] forState:UIControlStateNormal];
+    topRight.image = [UIImage imageNamed:@"scan_2"];
+    topRight.size = topLeft.size;
+    topRight.right = CGRectGetWidth(_scanWindow.frame);
+
+    UIImageView *bottomLeft = [[UIImageView alloc] init];
     [_scanWindow addSubview:bottomLeft];
+    bottomLeft.image = [UIImage imageNamed:@"scan_3"];
+    bottomLeft.size = topLeft.size;
+    bottomLeft.bottom = CGRectGetHeight(_scanWindow.frame)+2.f;
     
-    UIButton *bottomRight = [[UIButton alloc] initWithFrame:CGRectMake(topRight.left, bottomLeft.top, buttonWH, buttonWH)];
-    [bottomRight setImage:[UIImage imageNamed:@"scan_4"] forState:UIControlStateNormal];
+    UIImageView *bottomRight = [[UIImageView alloc] init];
     [_scanWindow addSubview:bottomRight];
+    bottomRight.image = [UIImage imageNamed:@"scan_4"];
+    bottomRight.size = topLeft.size;
+    bottomRight.bottom = CGRectGetHeight(_scanWindow.frame)+2.f;
+    bottomRight.right = CGRectGetWidth(_scanWindow.frame);
+    
+    _scanNetImageView = [[UIImageView alloc] init];
+    [_scanWindow addSubview:_scanNetImageView];
+    _scanNetImageView.size = _scanWindow.bounds.size;
+    _scanNetImageView.bottom = 0;
+    _scanNetImageView.image = [UIImage imageNamed:@"scan_net"];
 }
 
 - (void)beginScanning
@@ -267,8 +260,6 @@ static const CGFloat kMargin = 30;
             [alertView show];
             
         }
-        
-        
     }];
 }
 
@@ -287,7 +278,7 @@ static const CGFloat kMargin = 30;
 }
 
 #pragma mark-> 我的二维码
--(void)myCode
+-(void)myCodeBtnClick
 {
     NSLog(@"我的二维码");
 }
@@ -320,7 +311,7 @@ static const CGFloat kMargin = 30;
 
 - (void)resumeAnimation
 {
-    CAAnimation *anim = [_scanNetImageView.layer animationForKey:@"translationAnimation"];
+    CAAnimation *anim = [_scanNetImageView.layer animationForKey:@"groupAnimation"];
     if (anim) {
         // 1. 将动画的时间偏移量作为暂停时的时间点
         CFTimeInterval pauseTime = _scanNetImageView.layer.timeOffset;
@@ -332,26 +323,30 @@ static const CGFloat kMargin = 30;
         // 4. 设置图层的开始动画时间
         [_scanNetImageView.layer setBeginTime:beginTime];
         
-        [_scanNetImageView.layer setSpeed:1.0];
-        
+        [_scanNetImageView.layer setSpeed:2.0];
     }
     else {
-        CGFloat scanNetImageViewH = 241;
-        CGFloat scanWindowH = self.view.width - kMargin * 2;
-        CGFloat scanNetImageViewW = _scanWindow.width;
-        
-        _scanNetImageView.frame = CGRectMake(0, -scanNetImageViewH, scanNetImageViewW, scanNetImageViewH);
         CABasicAnimation *scanNetAnimation = [CABasicAnimation animation];
+        scanNetAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
         scanNetAnimation.keyPath = @"transform.translation.y";
-        scanNetAnimation.byValue = @(scanWindowH);
-        scanNetAnimation.duration = 1.0;
-        scanNetAnimation.repeatCount = MAXFLOAT;
-        [_scanNetImageView.layer addAnimation:scanNetAnimation forKey:@"translationAnimation"];
-        [_scanWindow addSubview:_scanNetImageView];
+        scanNetAnimation.byValue = @(HollowRect.size.height);
+        
+        CABasicAnimation *alphaAnimation = [CABasicAnimation animation];
+        alphaAnimation.beginTime = 1.7;
+        alphaAnimation.duration = 0.3;
+        alphaAnimation.keyPath = @"opacity";
+        alphaAnimation.fromValue = @(1.f);
+        alphaAnimation.toValue = @(0);
+        
+        CAAnimationGroup *group = [CAAnimationGroup animation];
+        group.animations = @[scanNetAnimation, alphaAnimation];
+        group.duration = 2.0;
+        group.repeatCount = MAXFLOAT;
+        group.fillMode = kCAFillModeForwards;
+        group.removedOnCompletion = NO;
+        
+        [_scanNetImageView.layer addAnimation:group forKey:@"groupAnimation"];
     }
-    
-    
-    
 }
 
 #pragma mark-> 获取扫描区域的比例关系

@@ -117,5 +117,9 @@ Stuff; \
 _Pragma("clang diagnostic pop") \
 } while (0)
 
+// 自动适配字体大小
+static inline CGFloat AutoFitFontSize (CGFloat basePointSize) {
+    return ((IS_IPHONE_4||IS_IPHONE_5)?basePointSize:(IS_IPHONE_6?(basePointSize+1):(basePointSize+2)));
+}
 
 #endif /* MacroToolHeader_h */
