@@ -29,13 +29,16 @@ static const CGFloat kLeftRightMargin = 40.f;
     
     [self setupUI];
     [self beginScanning];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWillEnterForeground) name:Notification_WillEnterForeground object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeAnimation) name:Notification_DidEnterBackground object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     // 开始扫描动画
-    [self resumeAnimation];
+    [self startAnimation];
 }
 
 - (void)setupUI
@@ -176,8 +179,8 @@ static const CGFloat kLeftRightMargin = 40.f;
     AVCaptureMetadataOutput * output = [[AVCaptureMetadataOutput alloc]init];
     //设置代理 在主线程里刷新
     [output setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
-    //设置有效扫描区域
-    CGRect scanCrop=[self getScanCrop:_scanWindow.bounds readerViewBounds:self.view.frame];
+    //设置有效扫描区域 (横屏计算)
+    CGRect scanCrop = [self getEffectiveRectWithScanRect:HollowRect defaultRect:self.view.frame];
     output.rectOfInterest = scanCrop;
     //初始化链接对象
     _session = [[AVCaptureSession alloc]init];
@@ -187,11 +190,14 @@ static const CGFloat kLeftRightMargin = 40.f;
     [_session addInput:input];
     [_session addOutput:output];
     //设置扫码支持的编码格式(如下设置条形码和二维码兼容)
-    output.metadataObjectTypes=@[AVMetadataObjectTypeQRCode,AVMetadataObjectTypeEAN13Code, AVMetadataObjectTypeEAN8Code, AVMetadataObjectTypeCode128Code];
+    output.metadataObjectTypes=@[ AVMetadataObjectTypeQRCode,
+                                  AVMetadataObjectTypeEAN13Code,
+                                  AVMetadataObjectTypeEAN8Code,
+                                  AVMetadataObjectTypeCode128Code ];
     
     AVCaptureVideoPreviewLayer * layer = [AVCaptureVideoPreviewLayer layerWithSession:_session];
-    layer.videoGravity=AVLayerVideoGravityResizeAspectFill;
-    layer.frame=self.view.layer.bounds;
+    layer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    layer.frame = self.view.layer.bounds;
     [self.view.layer insertSublayer:layer atIndex:0];
     //开始捕获
     [_session startRunning];
@@ -225,7 +231,7 @@ static const CGFloat kLeftRightMargin = 40.f;
          */
         controller.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
         //4.随便给他一个转场动画
-        controller.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
+        controller.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
         [self presentViewController:controller animated:YES completion:NULL];
         
     }
@@ -233,6 +239,15 @@ static const CGFloat kLeftRightMargin = 40.f;
         UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"设备不支持访问相册，请在设置->隐私->照片中进行设置！" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alert show];
     }
+}
+
+#pragma mark - Noti
+
+- (void)handleWillEnterForeground
+{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self startAnimation];
+    });
 }
 
 #pragma mark-> imagePickerController delegate
@@ -249,16 +264,14 @@ static const CGFloat kLeftRightMargin = 40.f;
         NSArray *features = [detector featuresInImage:[CIImage imageWithCGImage:image.CGImage]];
         if (features.count >=1) {
             /**结果对象 */
-            CIQRCodeFeature *feature = [features objectAtIndex:0];
+            CIQRCodeFeature *feature = features.firstObject;
             NSString *scannedResult = feature.messageString;
-            UIAlertView * alertView = [[UIAlertView alloc]initWithTitle:@"扫描结果" message:scannedResult delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"扫描结果" message:scannedResult delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
             [alertView show];
-            
         }
         else{
             UIAlertView * alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"该图片没有包含一个二维码！" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
             [alertView show];
-            
         }
     }];
 }
@@ -285,7 +298,6 @@ static const CGFloat kLeftRightMargin = 40.f;
 #pragma mark-> 开关闪光灯
 - (void)turnTorchOn:(BOOL)on
 {
-    
     Class captureDeviceClass = NSClassFromString(@"AVCaptureDevice");
     if (captureDeviceClass != nil) {
         AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
@@ -306,24 +318,23 @@ static const CGFloat kLeftRightMargin = 40.f;
     }
 }
 
+#pragma mark 开始动画
 
-#pragma mark 恢复动画
-
-- (void)resumeAnimation
+- (void)startAnimation
 {
     CAAnimation *anim = [_scanNetImageView.layer animationForKey:@"groupAnimation"];
     if (anim) {
-        // 1. 将动画的时间偏移量作为暂停时的时间点
-        CFTimeInterval pauseTime = _scanNetImageView.layer.timeOffset;
-        // 2. 根据媒体时间计算出准确的启动动画时间，对之前暂停动画的时间进行修正
-        CFTimeInterval beginTime = CACurrentMediaTime() - pauseTime;
-        
-        // 3. 要把偏移时间清零
-        [_scanNetImageView.layer setTimeOffset:0.0];
-        // 4. 设置图层的开始动画时间
-        [_scanNetImageView.layer setBeginTime:beginTime];
-        
-        [_scanNetImageView.layer setSpeed:2.0];
+        /**
+         // 1. 将动画的时间偏移量作为暂停时的时间点
+         CFTimeInterval pauseTime = _scanNetImageView.layer.timeOffset;
+         // 2. 根据媒体时间计算出准确的启动动画时间，对之前暂停动画的时间进行修正
+         CFTimeInterval beginTime = CACurrentMediaTime() - pauseTime;
+         // 3. 要把偏移时间清零
+         [_scanNetImageView.layer setTimeOffset:0.0];
+         // 4. 设置图层的开始动画时间
+         [_scanNetImageView.layer setBeginTime:beginTime];
+         [_scanNetImageView.layer setSpeed:2.0];
+         */
     }
     else {
         CABasicAnimation *scanNetAnimation = [CABasicAnimation animation];
@@ -349,20 +360,30 @@ static const CGFloat kLeftRightMargin = 40.f;
     }
 }
 
+- (void)removeAnimation
+{
+    [_scanNetImageView.layer removeAllAnimations];
+}
+
 #pragma mark-> 获取扫描区域的比例关系
 
--(CGRect)getScanCrop:(CGRect)rect readerViewBounds:(CGRect)readerViewBounds
+- (CGRect)getEffectiveRectWithScanRect:(CGRect)scanRect defaultRect:(CGRect)defaultRect
 {
+    CGFloat x, y, width, height;
+    CGFloat defaultWidth = CGRectGetWidth(defaultRect);
+    CGFloat defaultHeight = CGRectGetHeight(defaultRect);
     
-    CGFloat x,y,width,height;
+    x = CGRectGetMinX(HollowRect)/defaultWidth;
+    y = CGRectGetMinY(HollowRect)/defaultHeight;
+    width = CGRectGetWidth(HollowRect)/defaultWidth;
+    height = CGRectGetHeight(HollowRect)/defaultHeight;
     
-    x = (CGRectGetHeight(readerViewBounds)-CGRectGetHeight(rect))/2/CGRectGetHeight(readerViewBounds);
-    y = (CGRectGetWidth(readerViewBounds)-CGRectGetWidth(rect))/2/CGRectGetWidth(readerViewBounds);
-    width = CGRectGetHeight(rect)/CGRectGetHeight(readerViewBounds);
-    height = CGRectGetWidth(rect)/CGRectGetWidth(readerViewBounds);
-    
-    return CGRectMake(x, y, width, height);
-    
+    /**
+     这个CGRect参数和普通的Rect范围不太一样，它的四个值的范围都是0-1，表示比例。
+     rectOfInterest都是按照横屏来计算的 所以当竖屏的情况下 x轴和y轴要交换一下。
+     宽度和高度设置的情况同理。
+     */
+    return (CGRect){y, x, height, width};
 }
 
 #pragma mark-> 返回
@@ -380,6 +401,11 @@ static const CGFloat kLeftRightMargin = 40.f;
     } else if (buttonIndex == 1) {
         [_session startRunning];
     }
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

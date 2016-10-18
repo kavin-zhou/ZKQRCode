@@ -29,4 +29,14 @@
     return YES;
 }
 
+- (void)applicationWillEnterForeground:(UIApplication *)application
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:Notification_WillEnterForeground object:nil];
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:Notification_DidEnterBackground object:nil];
+}
+
 @end
