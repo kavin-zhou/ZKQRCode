@@ -262,7 +262,7 @@ static const CGFloat kLeftRightMargin = 40.f;
     [picker dismissViewControllerAnimated:YES completion:^{
         //监测到的结果数组
         NSArray *features = [detector featuresInImage:[CIImage imageWithCGImage:image.CGImage]];
-        if (features.count >=1) {
+        if (features.count >= 1) {
             /**结果对象 */
             CIQRCodeFeature *feature = features.firstObject;
             NSString *scannedResult = feature.messageString;
