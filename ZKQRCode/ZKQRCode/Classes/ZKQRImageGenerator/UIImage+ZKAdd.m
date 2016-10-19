@@ -80,4 +80,36 @@ void ProviderReleaseData (void *info, const void *data, size_t size){
     }
 }
 
+/** 将图片缩放到一定尺寸 */
+- (UIImage*)imageScaledToSize:(CGSize)newSize;
+{
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, [UIScreen mainScreen].scale);
+    [self drawInRect:(CGRect){CGPointZero,newSize}];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return newImage;
+}
+
+- (UIImage *)zk_addLogoAtCenterWithLogo:(UIImage *)logo
+{
+    CGFloat mainScale = [UIScreen mainScreen].scale;
+    
+    UIGraphicsBeginImageContextWithOptions(self.size, NO, mainScale);
+    
+    [self drawInRect:CGRectMake(0, 0, self.size.width, self.size.height)];
+    
+    CGFloat logoWH = 70.f * mainScale;
+    
+    logo = [logo imageScaledToSize:(CGSize){logoWH, logoWH}];
+    
+    CGFloat logoX = (self.size.width - logoWH) * 0.5;
+    CGFloat logoY = (self.size.height - logoWH) * 0.5;
+    
+    [logo drawInRect:CGRectMake(logoX, logoY, logoWH, logoWH)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 @end

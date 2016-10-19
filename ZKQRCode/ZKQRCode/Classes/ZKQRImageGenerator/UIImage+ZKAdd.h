@@ -13,5 +13,6 @@
 @interface UIImage (ZKAdd)
 
 - (UIImage *)zk_changeColorTo:(UIColor *)color;
+- (UIImage *)zk_addLogoAtCenterWithLogo:(UIImage *)logo;
 
 @end

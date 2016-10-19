@@ -47,6 +47,7 @@
     UIGraphicsEndImageContext();
     
     needImg = [needImg zk_changeColorTo:tintColor];
+    needImg = [needImg zk_addLogoAtCenterWithLogo:topImage];
     
     return needImg;
 }
