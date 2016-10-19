@@ -93,13 +93,11 @@ void ProviderReleaseData (void *info, const void *data, size_t size){
 
 - (UIImage *)zk_addLogoAtCenterWithLogo:(UIImage *)logo
 {
-    CGFloat mainScale = [UIScreen mainScreen].scale;
-    
-    UIGraphicsBeginImageContextWithOptions(self.size, NO, mainScale);
+    UIGraphicsBeginImageContextWithOptions(self.size, NO, 1);
     
     [self drawInRect:CGRectMake(0, 0, self.size.width, self.size.height)];
     
-    CGFloat logoWH = 70.f * mainScale;
+    CGFloat logoWH = 70.f;
     
     logo = [logo imageScaledToSize:(CGSize){logoWH, logoWH}];
     
