@@ -92,7 +92,7 @@
 - (void)createBtnClick
 {
     UIImage *topImage = [UIImage imageNamed:@"me"];
-    UIImage *tempImage = [ZKCodeGenerator qrImageForString:_textField.text imageSize:800 topImage:topImage tintColor:[UIColor greenColor]];
+    UIImage *tempImage = [ZKCodeGenerator qrImageForString:_textField.text imageSize:400 topImage:topImage tintColor:[UIColor blackColor]];
     _imageView.image = tempImage;
 }
 

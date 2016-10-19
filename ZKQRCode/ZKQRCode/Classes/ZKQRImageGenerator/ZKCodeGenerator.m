@@ -24,25 +24,29 @@
     
     CIImage *outputImage = filter.outputImage;
     
-    CGAffineTransform transform = CGAffineTransformMakeScale(2, 2); // scale 为放大倍数
-    CIImage *transformImage = [outputImage imageByApplyingTransform:transform];
+    /**
+     CGAffineTransform transform = CGAffineTransformMakeScale(2, 2);  //scale 为放大倍数
+     CIImage *transformImage = [outputImage imageByApplyingTransform:transform];
+     */
     
     // 保存
     CIContext *context = [CIContext contextWithOptions:nil];
-    CGImageRef imageRef = [context createCGImage:transformImage fromRect:transformImage.extent];
+    CGImageRef imageRef = [context createCGImage:outputImage fromRect:outputImage.extent];
     
     UIImage *qrCodeImage = [UIImage imageWithCGImage:imageRef];
     
+    CGFloat imageSize_pixel = imageSize * [UIScreen mainScreen].scale;
+    
     // 对图片做处理, 使图片大小合适，清晰，效果好
     
-    UIGraphicsBeginImageContext(CGSizeMake(imageSize, imageSize));
+    UIGraphicsBeginImageContext(CGSizeMake(imageSize_pixel, imageSize_pixel));
     CGContextRef contextRef = UIGraphicsGetCurrentContext();
     CGContextSetInterpolationQuality(contextRef, kCGInterpolationNone);
-    [qrCodeImage drawInRect:CGRectMake(0, 0, imageSize, imageSize)];
+    [qrCodeImage drawInRect:CGRectMake(0, 0, imageSize_pixel, imageSize_pixel)];
     UIImage *needImg = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
-    needImg = [needImg zk_changeColorTo:[UIColor yellowColor]];
+    needImg = [needImg zk_changeColorTo:tintColor];
     
     return needImg;
 }
