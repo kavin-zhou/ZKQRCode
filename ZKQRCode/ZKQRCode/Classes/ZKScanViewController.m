@@ -7,6 +7,7 @@
 //
 
 #import "ZKScanViewController.h"
+#import "ZKQRCodeTool.h"
 
 #define HollowRect   (CGRect){kLeftRightMargin, 120.f*WindowZoomScale, SCREEN_WIDTH-kLeftRightMargin*2, SCREEN_WIDTH-kLeftRightMargin*2}
 
@@ -200,7 +201,7 @@ static const CGFloat kLeftRightMargin = 40.f;
         return;
     }
     [_session stopRunning];
-    AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects[0];
+    AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
     NSString *resultStr = metadataObject.stringValue;
     if ([self.delegate respondsToSelector:@selector(scanViewController:didOutputResultString:)]) {
         [self.delegate scanViewController:self didOutputResultString:resultStr];
@@ -221,7 +222,7 @@ static const CGFloat kLeftRightMargin = 40.f;
          UIImagePickerControllerSourceTypeSavedPhotosAlbum,照片库
          */
         controller.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
-        controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+        controller.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
         [self presentViewController:controller animated:YES completion:NULL];
     }
     else {
@@ -242,17 +243,14 @@ static const CGFloat kLeftRightMargin = 40.f;
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage *image = info[UIImagePickerControllerOriginalImage];
-    CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:nil options:@{ CIDetectorAccuracy : CIDetectorAccuracyHigh }];
     [picker dismissViewControllerAnimated:YES completion:^{
-        NSArray *features = [detector featuresInImage:[CIImage imageWithCGImage:image.CGImage]];
-        if (!features.count) {
+        NSString *scanResultStr = [ZKQRCodeTool readQRCodeFromImage:image];
+        if (!scanResultStr.length) {
             UIAlertView * alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"该图片没有包含一个二维码！" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
             [alertView show];
             return;
         }
-        CIQRCodeFeature *feature = features.firstObject;
-        NSString *scannedResult = feature.messageString;
-        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"扫描结果" message:scannedResult delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"扫描结果" message:scanResultStr delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alertView show];
     }];
 }

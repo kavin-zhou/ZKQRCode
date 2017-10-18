@@ -1,14 +1,16 @@
 //
-//  ZKCodeGenerator.h
+//  ZKQRCodeTool.h
 //  ZKQRCode
 //
-//  Created by ZK on 16/10/18.
-//  Copyright © 2016年 ZK. All rights reserved.
+//  Created by Zhou Kang on 2017/10/18.
+//  Copyright © 2017年 ZK. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 
-@interface ZKCodeGenerator : NSObject
+@interface ZKQRCodeTool : NSObject
+
++ (NSString *)readQRCodeFromImage:(UIImage *)image;
 
 + (UIImage *)qrImageForString:(NSString *)string
                     imageSize:(CGFloat)imageSize

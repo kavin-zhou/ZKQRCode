@@ -1,15 +1,36 @@
 //
-//  ZKCodeGenerator.m
+//  ZKQRCodeTool.m
 //  ZKQRCode
 //
-//  Created by ZK on 16/10/18.
-//  Copyright © 2016年 ZK. All rights reserved.
+//  Created by Zhou Kang on 2017/10/18.
+//  Copyright © 2017年 ZK. All rights reserved.
 //
 
-#import "ZKCodeGenerator.h"
+#import "ZKQRCodeTool.h"
 #import "UIImage+ZKAdd.h"
 
-@implementation ZKCodeGenerator
+@implementation ZKQRCodeTool
+
++ (NSString *)readQRCodeFromImage:(UIImage *)image {
+    //1. 初始化扫描仪，设置设别类型和识别质量
+    NSDictionary *detectorOptions = @{CIDetectorAccuracy: CIDetectorAccuracyLow, CIDetectorTracking: @true};
+    CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode
+                                              context:nil
+                                              options:detectorOptions];
+    //2. 扫描获取的特征组
+    NSArray *features = [detector featuresInImage:[CIImage imageWithCGImage:image.CGImage]];
+    
+    if (!features.count) {
+        NSLog(@"没有识别");
+        return nil;
+    };
+    
+    //3. 获取扫描结果
+    CIQRCodeFeature *feature = features.firstObject;
+    NSString *scannedResult = feature.messageString;
+    
+    return scannedResult;
+}
 
 + (UIImage *)qrImageForString:(NSString *)string
                     imageSize:(CGFloat)imageSize

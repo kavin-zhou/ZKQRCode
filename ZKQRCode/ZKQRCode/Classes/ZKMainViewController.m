@@ -8,7 +8,7 @@
 
 #import "ZKMainViewController.h"
 #import "ZKScanViewController.h"
-#import "ZKCodeGenerator.h"
+#import "ZKQRCodeTool.h"
 
 @interface ZKMainViewController ()
 
@@ -85,7 +85,7 @@
 
 - (void)createBtnClick {
     UIImage *topImage = [UIImage imageNamed:@"me"];
-    UIImage *tempImage = [ZKCodeGenerator qrImageForString:_textField.text imageSize:200 topImage:topImage tintColor:[UIColor brownColor]];
+    UIImage *tempImage = [ZKQRCodeTool qrImageForString:_textField.text imageSize:200 topImage:topImage tintColor:[UIColor brownColor]];
     _imageView.image = tempImage;
 }
 
@@ -95,19 +95,7 @@
     if (gesture.state == UIGestureRecognizerStateBegan) {
         
         if(_imageView.image) {
-            //1. 初始化扫描仪，设置设别类型和识别质量
-            CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:nil options:@{ CIDetectorAccuracy : CIDetectorAccuracyLow, CIDetectorTracking: @YES}];
-            //2. 扫描获取的特征组
-            NSArray *features = [detector featuresInImage:[CIImage imageWithCGImage:_imageView.image.CGImage]];
-            
-            if (!features.count) {
-                NSLog(@"没有识别");
-                return;
-            };
-            
-            //3. 获取扫描结果
-            CIQRCodeFeature *feature = features.firstObject;
-            NSString *scannedResult = feature.messageString;
+            NSString *scannedResult = [ZKQRCodeTool readQRCodeFromImage:_imageView.image];
             UIAlertView * alertView = [[UIAlertView alloc]initWithTitle:@"扫描结果" message:scannedResult delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
             [alertView show];
         }
