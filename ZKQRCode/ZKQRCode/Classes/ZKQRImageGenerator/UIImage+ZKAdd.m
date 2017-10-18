@@ -10,12 +10,11 @@
 
 @implementation UIImage (ZKAdd)
 
-void ProviderReleaseData (void *info, const void *data, size_t size){
+void ProviderReleaseData (void *info, const void *data, size_t size) {
     free((void*)data);
 }
 
-- (UIImage*)zk_changeColorTo:(UIColor *)color
-{
+- (UIImage*)zk_changeColorTo:(UIColor *)color {
     CGFloat components[3];
     [self getRGBComponents:components forColor:color];
     
@@ -31,16 +30,14 @@ void ProviderReleaseData (void *info, const void *data, size_t size){
     int pixelNum = imageWidth * imageHeight;
     uint32_t* pCurPtr = rgbImageBuf;
     for (int i = 0; i < pixelNum; i++, pCurPtr++){
-        if ((*pCurPtr & 0xFFFFFF00) < 0x99999900)    // 将白色变成透明
-        {
+        if ((*pCurPtr & 0xFFFFFF00) < 0x99999900) { // 将白色变成透明
             // 改成下面的代码，会将图片转成想要的颜色
             uint8_t* ptr = (uint8_t*)pCurPtr;
             ptr[3] = components[0]?:1; //0~255
             ptr[2] = components[1]?:1;
             ptr[1] = components[2]?:1;
         }
-        else
-        {
+        else {
             uint8_t* ptr = (uint8_t*)pCurPtr;
             ptr[0] = 0;
         }
@@ -59,8 +56,7 @@ void ProviderReleaseData (void *info, const void *data, size_t size){
     return resultUIImage;
 }
 
-- (void)getRGBComponents:(CGFloat [3])components forColor:(UIColor *)color
-{
+- (void)getRGBComponents:(CGFloat [3])components forColor:(UIColor *)color {
     CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
     unsigned char resultingPixel[4];
     CGContextRef context = CGBitmapContextCreate(&resultingPixel,
@@ -81,8 +77,7 @@ void ProviderReleaseData (void *info, const void *data, size_t size){
 }
 
 /** 将图片缩放到一定尺寸 */
-- (UIImage*)imageScaledToSize:(CGSize)newSize;
-{
+- (UIImage*)imageScaledToSize:(CGSize)newSize {
     UIGraphicsBeginImageContextWithOptions(newSize, NO, [UIScreen mainScreen].scale);
     [self drawInRect:(CGRect){CGPointZero,newSize}];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -91,13 +86,12 @@ void ProviderReleaseData (void *info, const void *data, size_t size){
     return newImage;
 }
 
-- (UIImage *)zk_addLogoAtCenterWithLogo:(UIImage *)logo
-{
+- (UIImage *)zk_addLogoAtCenterWithLogo:(UIImage *)logo {
     UIGraphicsBeginImageContextWithOptions(self.size, NO, 1);
     
     [self drawInRect:CGRectMake(0, 0, self.size.width, self.size.height)];
     
-    CGFloat logoWH = 70.f;
+    CGFloat logoWH = 100.f;
     
     logo = [logo imageScaledToSize:(CGSize){logoWH, logoWH}];
     

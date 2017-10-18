@@ -14,10 +14,8 @@
 		584245791DB4C0CF0003BBD6 /* ZKQRCodeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245781DB4C0CF0003BBD6 /* ZKQRCodeTests.m */; };
 		584245841DB4C0CF0003BBD6 /* ZKQRCodeUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245831DB4C0CF0003BBD6 /* ZKQRCodeUITests.m */; };
 		584245951DB4C1660003BBD6 /* ZKScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245931DB4C1660003BBD6 /* ZKScanViewController.m */; };
-		584245A01DB4C6F20003BBD6 /* UIView+AutoLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 5842459D1DB4C6F20003BBD6 /* UIView+AutoLayout.m */; };
 		584245A11DB4C6F20003BBD6 /* UIView+ZKCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 5842459F1DB4C6F20003BBD6 /* UIView+ZKCommon.m */; };
 		584245AA1DB4CEF40003BBD6 /* ZKMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245A91DB4CEF40003BBD6 /* ZKMainViewController.m */; };
-		584245AF1DB5C0140003BBD6 /* UIImage+Common.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245AE1DB5C0140003BBD6 /* UIImage+Common.m */; };
 		584245B31DB5C9410003BBD6 /* ZKConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245B11DB5C9410003BBD6 /* ZKConfig.m */; };
 		584245D51DB631E30003BBD6 /* UIImage+ZKAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245D41DB631E30003BBD6 /* UIImage+ZKAdd.m */; };
 		587B05411F97223B003AFA95 /* ZKQRCodeTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 587B05401F97223B003AFA95 /* ZKQRCodeTool.m */; };
@@ -56,15 +54,11 @@
 		584245851DB4C0CF0003BBD6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		584245921DB4C1660003BBD6 /* ZKScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZKScanViewController.h; sourceTree = "<group>"; };
 		584245931DB4C1660003BBD6 /* ZKScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZKScanViewController.m; sourceTree = "<group>"; };
-		5842459C1DB4C6F20003BBD6 /* UIView+AutoLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AutoLayout.h"; sourceTree = "<group>"; };
-		5842459D1DB4C6F20003BBD6 /* UIView+AutoLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AutoLayout.m"; sourceTree = "<group>"; };
 		5842459E1DB4C6F20003BBD6 /* UIView+ZKCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+ZKCommon.h"; sourceTree = "<group>"; };
 		5842459F1DB4C6F20003BBD6 /* UIView+ZKCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ZKCommon.m"; sourceTree = "<group>"; };
 		584245A81DB4CEF40003BBD6 /* ZKMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZKMainViewController.h; sourceTree = "<group>"; };
 		584245A91DB4CEF40003BBD6 /* ZKMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZKMainViewController.m; sourceTree = "<group>"; };
 		584245AB1DB4CF700003BBD6 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
-		584245AD1DB5C0140003BBD6 /* UIImage+Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Common.h"; sourceTree = "<group>"; };
-		584245AE1DB5C0140003BBD6 /* UIImage+Common.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Common.m"; sourceTree = "<group>"; };
 		584245B01DB5C9410003BBD6 /* ZKConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZKConfig.h; sourceTree = "<group>"; };
 		584245B11DB5C9410003BBD6 /* ZKConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZKConfig.m; sourceTree = "<group>"; };
 		584245B21DB5C9410003BBD6 /* MacroToolHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacroToolHeader.h; sourceTree = "<group>"; };
@@ -187,8 +181,6 @@
 		5842459B1DB4C6F20003BBD6 /* ViewLayout */ = {
 			isa = PBXGroup;
 			children = (
-				5842459C1DB4C6F20003BBD6 /* UIView+AutoLayout.h */,
-				5842459D1DB4C6F20003BBD6 /* UIView+AutoLayout.m */,
 				5842459E1DB4C6F20003BBD6 /* UIView+ZKCommon.h */,
 				5842459F1DB4C6F20003BBD6 /* UIView+ZKCommon.m */,
 			);
@@ -201,8 +193,6 @@
 				584245B01DB5C9410003BBD6 /* ZKConfig.h */,
 				584245B11DB5C9410003BBD6 /* ZKConfig.m */,
 				584245B21DB5C9410003BBD6 /* MacroToolHeader.h */,
-				584245AD1DB5C0140003BBD6 /* UIImage+Common.h */,
-				584245AE1DB5C0140003BBD6 /* UIImage+Common.m */,
 			);
 			path = Tool;
 			sourceTree = "<group>";
@@ -352,11 +342,9 @@
 				584245B31DB5C9410003BBD6 /* ZKConfig.m in Sources */,
 				584245631DB4C0CF0003BBD6 /* AppDelegate.m in Sources */,
 				587B05411F97223B003AFA95 /* ZKQRCodeTool.m in Sources */,
-				584245A01DB4C6F20003BBD6 /* UIView+AutoLayout.m in Sources */,
 				584245AA1DB4CEF40003BBD6 /* ZKMainViewController.m in Sources */,
 				584245601DB4C0CF0003BBD6 /* main.m in Sources */,
 				584245D51DB631E30003BBD6 /* UIImage+ZKAdd.m in Sources */,
-				584245AF1DB5C0140003BBD6 /* UIImage+Common.m in Sources */,
 				584245A11DB4C6F20003BBD6 /* UIView+ZKCommon.m in Sources */,
 				584245951DB4C1660003BBD6 /* ZKScanViewController.m in Sources */,
 			);
