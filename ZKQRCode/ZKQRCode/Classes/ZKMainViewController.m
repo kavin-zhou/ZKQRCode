@@ -21,15 +21,12 @@
 
 @implementation ZKMainViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
-    
-    [self setupUI];
+    [self setupViews];
 }
 
-- (void)setupUI
-{
+- (void)setupViews {
     _textField = [[UITextField alloc] init];
     _textField.backgroundColor = [[UIColor brownColor] colorWithAlphaComponent:.7];
     [self.view addSubview:_textField];
@@ -49,8 +46,7 @@
     [_imageView addGestureRecognizer:longPress];
 }
 
-- (UIButton *)setupBtnWithTitle:(NSString *)title selector:(SEL)selector
-{
+- (UIButton *)setupBtnWithTitle:(NSString *)title selector:(SEL)selector {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.view addSubview:button];
     button.backgroundColor = [[UIColor orangeColor] colorWithAlphaComponent:.6];
@@ -64,8 +60,7 @@
     return button;
 }
 
-- (void)viewDidLayoutSubviews
-{
+- (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     
     _textField.top = 100.f;
@@ -83,14 +78,12 @@
 
 #pragma mark - Actions
 
-- (void)scanBtnClick
-{
+- (void)scanBtnClick {
     ZKScanViewController *scanVC = [[ZKScanViewController alloc] init];
     [self.navigationController pushViewController:scanVC animated:YES];
 }
 
-- (void)createBtnClick
-{
+- (void)createBtnClick {
     UIImage *topImage = [UIImage imageNamed:@"me"];
     UIImage *tempImage = [ZKCodeGenerator qrImageForString:_textField.text imageSize:200 topImage:topImage tintColor:[UIColor brownColor]];
     _imageView.image = tempImage;
@@ -98,8 +91,7 @@
 
 #pragma mark - Gesture
 
-- (void)handleLongPress:(UILongPressGestureRecognizer *)gesture
-{
+- (void)handleLongPress:(UILongPressGestureRecognizer *)gesture {
     if (gesture.state == UIGestureRecognizerStateBegan) {
         
         if(_imageView.image) {

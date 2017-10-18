@@ -8,6 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
+@class ZKScanViewController;
+
+@protocol ZKScanViewControllerDelegate <NSObject>
+
+@optional
+
+- (void)scanViewController:(ZKScanViewController *)scanViewController
+     didOutputResultString:(NSString *)resultString;
+
+@end
+
 @interface ZKScanViewController : UIViewController
+
+@property (nonatomic, weak) id <ZKScanViewControllerDelegate> delegate;
 
 @end

@@ -10,7 +10,7 @@
 
 #define HollowRect   (CGRect){kLeftRightMargin, 120.f*WindowZoomScale, SCREEN_WIDTH-kLeftRightMargin*2, SCREEN_WIDTH-kLeftRightMargin*2}
 
-@interface ZKScanViewController ()<UIAlertViewDelegate,AVCaptureMetadataOutputObjectsDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface ZKScanViewController () <UIAlertViewDelegate, AVCaptureMetadataOutputObjectsDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (nonatomic, strong) AVCaptureSession *session;
 @property (nonatomic, strong) UIView           *maskView;
@@ -23,26 +23,25 @@ static const CGFloat kLeftRightMargin = 40.f;
 
 @implementation ZKScanViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
-    
-    [self setupUI];
+    [self setupViews];
     [self beginScanning];
-    
+    [self addObserver];
+}
+
+- (void)addObserver {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWillEnterForeground) name:Notification_WillEnterForeground object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeAnimation) name:Notification_DidEnterBackground object:nil];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     // 开始扫描动画
     [self startAnimation];
 }
 
-- (void)setupUI
-{
+- (void)setupViews {
     self.navigationController.navigationBar.hidden = YES;
     
     [self setupMaskView];
@@ -51,8 +50,7 @@ static const CGFloat kLeftRightMargin = 40.f;
     [self setupScanWindowView];
 }
 
--(void)setupNavView
-{
+-(void)setupNavView {
     UIView *navBar = [[UIView alloc] init];
     [self.view addSubview:navBar];
     navBar.frame = (CGRect){0, 30.f, SCREEN_WIDTH, 64.f};
@@ -70,7 +68,7 @@ static const CGFloat kLeftRightMargin = 40.f;
     albumBtn.centerX = navBar.centerX;
     [albumBtn setImage:[UIImage imageNamed:@"qrcode_scan_btn_photo_down"] forState:UIControlStateNormal];
     albumBtn.contentMode = UIViewContentModeCenter;
-    [albumBtn addTarget:self action:@selector(myAlbum) forControlEvents:UIControlEventTouchUpInside];
+    [albumBtn addTarget:self action:@selector(openAlbum) forControlEvents:UIControlEventTouchUpInside];
     
     UIButton * flashBtn=[UIButton buttonWithType:UIButtonTypeCustom];
     [navBar addSubview:flashBtn];
@@ -81,8 +79,7 @@ static const CGFloat kLeftRightMargin = 40.f;
     [flashBtn addTarget:self action:@selector(openFlash:) forControlEvents:UIControlEventTouchUpInside];
 }
 
-- (void)setupMaskView
-{
+- (void)setupMaskView {
     _maskView = [[UIView alloc] init];
     _maskView.backgroundColor = [UIColor clearColor];
     _maskView.frame = [UIScreen mainScreen].bounds;
@@ -103,8 +100,7 @@ static const CGFloat kLeftRightMargin = 40.f;
     [_maskView.layer addSublayer:shapeLayer];
 }
 
-- (void)setupBottomBar
-{
+- (void)setupBottomBar {
     UIView *bottomBar = [[UIView alloc] init];
     bottomBar.backgroundColor = [UIColor clearColor];
     bottomBar.size = (CGSize){SCREEN_WIDTH, 100.f};
@@ -130,8 +126,7 @@ static const CGFloat kLeftRightMargin = 40.f;
     [myCodeBtn addTarget:self action:@selector(myCodeBtnClick) forControlEvents:UIControlEventTouchUpInside];
 }
 
-- (void)setupScanWindowView
-{
+- (void)setupScanWindowView {
     _scanWindow = [[UIView alloc] init];
     _scanWindow.clipsToBounds = YES;
     [self.view addSubview:_scanWindow];
@@ -168,72 +163,66 @@ static const CGFloat kLeftRightMargin = 40.f;
     _scanNetImageView.image = [UIImage imageNamed:@"scan_net"];
 }
 
-- (void)beginScanning
-{
-    //获取摄像设备
-    AVCaptureDevice * device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    //创建输入流
-    AVCaptureDeviceInput * input = [AVCaptureDeviceInput deviceInputWithDevice:device error:nil];
-    if (!input) return;
-    //创建输出流
-    AVCaptureMetadataOutput * output = [[AVCaptureMetadataOutput alloc]init];
+- (void)beginScanning {
+    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:nil];
+    if (!input) {
+        return;
+    };
+    AVCaptureMetadataOutput *output = [[AVCaptureMetadataOutput alloc] init];
     //设置代理 在主线程里刷新
     [output setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
     //设置有效扫描区域 (横屏计算)
     CGRect scanCrop = [self getEffectiveRectWithScanRect:HollowRect defaultRect:self.view.frame];
     output.rectOfInterest = scanCrop;
-    //初始化链接对象
-    _session = [[AVCaptureSession alloc]init];
-    //高质量采集率
+    _session = [[AVCaptureSession alloc] init];
     [_session setSessionPreset:AVCaptureSessionPresetHigh];
-    
     [_session addInput:input];
     [_session addOutput:output];
     //设置扫码支持的编码格式(如下设置条形码和二维码兼容)
-    output.metadataObjectTypes=@[ AVMetadataObjectTypeQRCode,
-                                  AVMetadataObjectTypeEAN13Code,
-                                  AVMetadataObjectTypeEAN8Code,
-                                  AVMetadataObjectTypeCode128Code ];
+    output.metadataObjectTypes = @[ AVMetadataObjectTypeQRCode,
+                                    AVMetadataObjectTypeEAN13Code,
+                                    AVMetadataObjectTypeEAN8Code,
+                                    AVMetadataObjectTypeCode128Code ];
     
-    AVCaptureVideoPreviewLayer * layer = [AVCaptureVideoPreviewLayer layerWithSession:_session];
+    AVCaptureVideoPreviewLayer *layer = [AVCaptureVideoPreviewLayer layerWithSession:_session];
     layer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     layer.frame = self.view.layer.bounds;
     [self.view.layer insertSublayer:layer atIndex:0];
-    //开始捕获
+    
     [_session startRunning];
 }
 
--(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection{
-    if (metadataObjects.count>0) {
-        [_session stopRunning];
-        AVMetadataMachineReadableCodeObject * metadataObject = [metadataObjects objectAtIndex : 0 ];
-        
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"扫描结果" message:metadataObject.stringValue delegate:self cancelButtonTitle:@"退出" otherButtonTitles:@"再次扫描", nil];
-        [alert show];
+#pragma mark - <AVCaptureMetadataOutputObjectsDelegate>
+
+- (void)captureOutput:(AVCaptureOutput *)output didOutputMetadataObjects:(NSArray<__kindof AVMetadataObject *> *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
+    if (!metadataObjects.count) {
+        return;
     }
+    [_session stopRunning];
+    AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects[0];
+    NSString *resultStr = metadataObject.stringValue;
+    if ([self.delegate respondsToSelector:@selector(scanViewController:didOutputResultString:)]) {
+        [self.delegate scanViewController:self didOutputResultString:resultStr];
+    }
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"扫描结果" message:resultStr delegate:self cancelButtonTitle:@"退出" otherButtonTitles:@"再次扫描", nil];
+    [alert show];
 }
 
-#pragma mark-> 我的相册
+#pragma mark - Album
 
--(void)myAlbum
-{
-    NSLog(@"我的相册");
+- (void)openAlbum {
     if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
-        //1.初始化相册拾取器
         UIImagePickerController *controller = [[UIImagePickerController alloc] init];
-        //2.设置代理
         controller.delegate = self;
-        //3.设置资源：
         /**
          UIImagePickerControllerSourceTypePhotoLibrary,相册
          UIImagePickerControllerSourceTypeCamera,相机
          UIImagePickerControllerSourceTypeSavedPhotosAlbum,照片库
          */
         controller.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
-        //4.随便给他一个转场动画
-        controller.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+        controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
         [self presentViewController:controller animated:YES completion:NULL];
-        
     }
     else {
         UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"设备不支持访问相册，请在设置->隐私->照片中进行设置！" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
@@ -243,43 +232,34 @@ static const CGFloat kLeftRightMargin = 40.f;
 
 #pragma mark - Noti
 
-- (void)handleWillEnterForeground
-{
+- (void)handleWillEnterForeground {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self startAnimation];
     });
 }
 
-#pragma mark-> imagePickerController delegate
+#pragma mark - imagePickerController delegate
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
-{
-    //1.获取选择的图片
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage *image = info[UIImagePickerControllerOriginalImage];
-    //2.初始化一个监测器
-    CIDetector*detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:nil options:@{ CIDetectorAccuracy : CIDetectorAccuracyHigh }];
-    
+    CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:nil options:@{ CIDetectorAccuracy : CIDetectorAccuracyHigh }];
     [picker dismissViewControllerAnimated:YES completion:^{
-        //监测到的结果数组
         NSArray *features = [detector featuresInImage:[CIImage imageWithCGImage:image.CGImage]];
-        if (features.count >= 1) {
-            /**结果对象 */
-            CIQRCodeFeature *feature = features.firstObject;
-            NSString *scannedResult = feature.messageString;
-            UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"扫描结果" message:scannedResult delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alertView show];
-        }
-        else{
+        if (!features.count) {
             UIAlertView * alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"该图片没有包含一个二维码！" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
             [alertView show];
+            return;
         }
+        CIQRCodeFeature *feature = features.firstObject;
+        NSString *scannedResult = feature.messageString;
+        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"扫描结果" message:scannedResult delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alertView show];
     }];
 }
 
-#pragma mark-> 闪光灯
+#pragma mark - 闪光灯
 
--(void)openFlash:(UIButton*)button
-{
+-(void)openFlash:(UIButton*)button {
     NSLog(@"闪光灯");
     button.selected = !button.selected;
     if (button.selected) {
@@ -290,38 +270,35 @@ static const CGFloat kLeftRightMargin = 40.f;
     }
 }
 
-#pragma mark-> 我的二维码
--(void)myCodeBtnClick
-{
+#pragma mark - 我的二维码
+-(void)myCodeBtnClick {
     NSLog(@"我的二维码");
 }
-#pragma mark-> 开关闪光灯
-- (void)turnTorchOn:(BOOL)on
-{
+
+#pragma mark - 开关闪光灯
+- (void)turnTorchOn:(BOOL)on {
     Class captureDeviceClass = NSClassFromString(@"AVCaptureDevice");
-    if (captureDeviceClass != nil) {
-        AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-        
-        if ([device hasTorch] && [device hasFlash]){
-            
-            [device lockForConfiguration:nil];
-            if (on) {
-                [device setTorchMode:AVCaptureTorchModeOn];
-                [device setFlashMode:AVCaptureFlashModeOn];
-                
-            } else {
-                [device setTorchMode:AVCaptureTorchModeOff];
-                [device setFlashMode:AVCaptureFlashModeOff];
-            }
-            [device unlockForConfiguration];
+    if (!captureDeviceClass) {
+        return;
+    }
+    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    if ([device hasTorch] && [device hasFlash]){
+        [device lockForConfiguration:nil];
+        if (on) {
+            [device setTorchMode:AVCaptureTorchModeOn];
+            [device setFlashMode:AVCaptureFlashModeOn];
         }
+        else {
+            [device setTorchMode:AVCaptureTorchModeOff];
+            [device setFlashMode:AVCaptureFlashModeOff];
+        }
+        [device unlockForConfiguration];
     }
 }
 
 #pragma mark 开始动画
 
-- (void)startAnimation
-{
+- (void)startAnimation {
     CAAnimation *anim = [_scanNetImageView.layer animationForKey:@"groupAnimation"];
     if (anim) {
         /**
@@ -360,23 +337,21 @@ static const CGFloat kLeftRightMargin = 40.f;
     }
 }
 
-- (void)removeAnimation
-{
+- (void)removeAnimation {
     [_scanNetImageView.layer removeAllAnimations];
 }
 
-#pragma mark-> 获取扫描区域的比例关系
+#pragma mark - 获取扫描区域的比例关系
 
-- (CGRect)getEffectiveRectWithScanRect:(CGRect)scanRect defaultRect:(CGRect)defaultRect
-{
+- (CGRect)getEffectiveRectWithScanRect:(CGRect)scanRect defaultRect:(CGRect)defaultRect {
     CGFloat x, y, width, height;
     CGFloat defaultWidth = CGRectGetWidth(defaultRect);
     CGFloat defaultHeight = CGRectGetHeight(defaultRect);
     
-    x = CGRectGetMinX(HollowRect)/defaultWidth;
-    y = CGRectGetMinY(HollowRect)/defaultHeight;
-    width = CGRectGetWidth(HollowRect)/defaultWidth;
-    height = CGRectGetHeight(HollowRect)/defaultHeight;
+    x = CGRectGetMinX(HollowRect) / defaultWidth;
+    y = CGRectGetMinY(HollowRect) / defaultHeight;
+    width = CGRectGetWidth(HollowRect) / defaultWidth;
+    height = CGRectGetHeight(HollowRect) / defaultHeight;
     
     /**
      这个CGRect参数和普通的Rect范围不太一样，它的四个值的范围都是0-1，表示比例。
@@ -386,16 +361,14 @@ static const CGFloat kLeftRightMargin = 40.f;
     return (CGRect){y, x, height, width};
 }
 
-#pragma mark-> 返回
-- (void)disMiss
-{
+#pragma mark - 返回
+- (void)disMiss {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - UIAlertViewDelegate
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 0) {
         [self disMiss];
     } else if (buttonIndex == 1) {
@@ -403,8 +376,7 @@ static const CGFloat kLeftRightMargin = 40.f;
     }
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
