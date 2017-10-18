@@ -35,8 +35,7 @@
 + (UIImage *)qrImageForString:(NSString *)string
                     imageSize:(CGFloat)imageSize
                      topImage:(UIImage *)topImage
-                    tintColor:(UIColor *)tintColor
-{
+                    tintColor:(UIColor *)tintColor {
     NSString *urlString = string;
     NSData *data = [urlString dataUsingEncoding:NSUTF8StringEncoding]; // NSISOLatin1StringEncoding 编码
     
@@ -64,13 +63,33 @@
     CGContextRef contextRef = UIGraphicsGetCurrentContext();
     CGContextSetInterpolationQuality(contextRef, kCGInterpolationNone);
     [qrCodeImage drawInRect:CGRectMake(0, 0, imageSize_pixel, imageSize_pixel)];
-    UIImage *needImg = UIGraphicsGetImageFromCurrentImageContext();
+    UIImage *qrImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
-    needImg = [needImg zk_changeColorTo:tintColor];
-    needImg = [needImg zk_addLogoAtCenterWithLogo:topImage];
+    qrImage = [qrImage zk_changeColorTo:tintColor];
+    qrImage = [qrImage zk_addLogoAtCenterWithLogo:topImage];
     
-    return needImg;
+    return qrImage;
+}
+
++ (void)turnTorchOn:(BOOL)on {
+    Class captureDeviceClass = NSClassFromString(@"AVCaptureDevice");
+    if (!captureDeviceClass) {
+        return;
+    }
+    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    if ([device hasTorch] && [device hasFlash]){
+        [device lockForConfiguration:nil];
+        if (on) {
+            [device setTorchMode:AVCaptureTorchModeOn];
+            [device setFlashMode:AVCaptureFlashModeOn];
+        }
+        else {
+            [device setTorchMode:AVCaptureTorchModeOff];
+            [device setFlashMode:AVCaptureFlashModeOff];
+        }
+        [device unlockForConfiguration];
+    }
 }
 
 @end

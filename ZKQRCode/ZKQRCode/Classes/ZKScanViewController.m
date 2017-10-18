@@ -180,7 +180,7 @@ static const CGFloat kLeftRightMargin = 40.f;
     [_session setSessionPreset:AVCaptureSessionPresetHigh];
     [_session addInput:input];
     [_session addOutput:output];
-    //设置扫码支持的编码格式(如下设置条形码和二维码兼容)
+    
     output.metadataObjectTypes = @[ AVMetadataObjectTypeQRCode,
                                     AVMetadataObjectTypeEAN13Code,
                                     AVMetadataObjectTypeEAN8Code,
@@ -261,37 +261,16 @@ static const CGFloat kLeftRightMargin = 40.f;
     NSLog(@"闪光灯");
     button.selected = !button.selected;
     if (button.selected) {
-        [self turnTorchOn:YES];
+        [ZKQRCodeTool turnTorchOn:true];
     }
     else{
-        [self turnTorchOn:NO];
+        [ZKQRCodeTool turnTorchOn:false];
     }
 }
 
 #pragma mark - 我的二维码
 -(void)myCodeBtnClick {
     NSLog(@"我的二维码");
-}
-
-#pragma mark - 开关闪光灯
-- (void)turnTorchOn:(BOOL)on {
-    Class captureDeviceClass = NSClassFromString(@"AVCaptureDevice");
-    if (!captureDeviceClass) {
-        return;
-    }
-    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    if ([device hasTorch] && [device hasFlash]){
-        [device lockForConfiguration:nil];
-        if (on) {
-            [device setTorchMode:AVCaptureTorchModeOn];
-            [device setFlashMode:AVCaptureFlashModeOn];
-        }
-        else {
-            [device setTorchMode:AVCaptureTorchModeOff];
-            [device setFlashMode:AVCaptureFlashModeOff];
-        }
-        [device unlockForConfiguration];
-    }
 }
 
 #pragma mark 开始动画

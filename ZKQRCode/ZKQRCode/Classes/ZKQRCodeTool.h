@@ -16,5 +16,6 @@
                     imageSize:(CGFloat)imageSize
                      topImage:(UIImage *)topImage
                     tintColor:(UIColor *)tintColor;
++ (void)turnTorchOn:(BOOL)on;
 
 @end

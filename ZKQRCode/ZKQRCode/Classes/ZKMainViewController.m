@@ -86,7 +86,14 @@
 - (void)createBtnClick {
     UIImage *topImage = [UIImage imageNamed:@"me"];
     UIImage *tempImage = [ZKQRCodeTool qrImageForString:_textField.text imageSize:200 topImage:topImage tintColor:[UIColor brownColor]];
-    _imageView.image = tempImage;
+    [UIView animateWithDuration:.12 animations:^{
+        _imageView.alpha = 0;
+    } completion:^(BOOL finished) {
+        _imageView.image = tempImage;
+        [UIView animateWithDuration:.12 animations:^{
+            _imageView.alpha = 1.f;
+        }];
+    }];
 }
 
 #pragma mark - Gesture

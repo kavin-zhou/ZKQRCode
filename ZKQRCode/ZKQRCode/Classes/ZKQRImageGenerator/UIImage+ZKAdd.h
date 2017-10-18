@@ -14,5 +14,6 @@
 
 - (UIImage *)zk_changeColorTo:(UIColor *)color;
 - (UIImage *)zk_addLogoAtCenterWithLogo:(UIImage *)logo;
+- (UIImage *)zk_imageByRoundCornerRadius:(CGFloat)radius;
 
 @end
