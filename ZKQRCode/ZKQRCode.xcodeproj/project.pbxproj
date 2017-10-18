@@ -19,14 +19,6 @@
 		584245AA1DB4CEF40003BBD6 /* ZKMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245A91DB4CEF40003BBD6 /* ZKMainViewController.m */; };
 		584245AF1DB5C0140003BBD6 /* UIImage+Common.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245AE1DB5C0140003BBD6 /* UIImage+Common.m */; };
 		584245B31DB5C9410003BBD6 /* ZKConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245B11DB5C9410003BBD6 /* ZKConfig.m */; };
-		584245C51DB611600003BBD6 /* bitstream.c in Sources */ = {isa = PBXBuildFile; fileRef = 584245B51DB611600003BBD6 /* bitstream.c */; };
-		584245C61DB611600003BBD6 /* mask.c in Sources */ = {isa = PBXBuildFile; fileRef = 584245B71DB611600003BBD6 /* mask.c */; };
-		584245C71DB611600003BBD6 /* QRCodeGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245BA1DB611600003BBD6 /* QRCodeGenerator.m */; };
-		584245C81DB611600003BBD6 /* qrencode.c in Sources */ = {isa = PBXBuildFile; fileRef = 584245BB1DB611600003BBD6 /* qrencode.c */; };
-		584245C91DB611600003BBD6 /* qrinput.c in Sources */ = {isa = PBXBuildFile; fileRef = 584245BD1DB611600003BBD6 /* qrinput.c */; };
-		584245CA1DB611600003BBD6 /* qrspec.c in Sources */ = {isa = PBXBuildFile; fileRef = 584245BF1DB611600003BBD6 /* qrspec.c */; };
-		584245CB1DB611600003BBD6 /* rscode.c in Sources */ = {isa = PBXBuildFile; fileRef = 584245C11DB611600003BBD6 /* rscode.c */; };
-		584245CC1DB611600003BBD6 /* split.c in Sources */ = {isa = PBXBuildFile; fileRef = 584245C31DB611600003BBD6 /* split.c */; };
 		584245D21DB62F480003BBD6 /* ZKCodeGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245D11DB62F480003BBD6 /* ZKCodeGenerator.m */; };
 		584245D51DB631E30003BBD6 /* UIImage+ZKAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245D41DB631E30003BBD6 /* UIImage+ZKAdd.m */; };
 /* End PBXBuildFile section */
@@ -76,22 +68,6 @@
 		584245B01DB5C9410003BBD6 /* ZKConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZKConfig.h; sourceTree = "<group>"; };
 		584245B11DB5C9410003BBD6 /* ZKConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZKConfig.m; sourceTree = "<group>"; };
 		584245B21DB5C9410003BBD6 /* MacroToolHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacroToolHeader.h; sourceTree = "<group>"; };
-		584245B51DB611600003BBD6 /* bitstream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bitstream.c; sourceTree = "<group>"; };
-		584245B61DB611600003BBD6 /* bitstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitstream.h; sourceTree = "<group>"; };
-		584245B71DB611600003BBD6 /* mask.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mask.c; sourceTree = "<group>"; };
-		584245B81DB611600003BBD6 /* mask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mask.h; sourceTree = "<group>"; };
-		584245B91DB611600003BBD6 /* QRCodeGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRCodeGenerator.h; sourceTree = "<group>"; };
-		584245BA1DB611600003BBD6 /* QRCodeGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCodeGenerator.m; sourceTree = "<group>"; };
-		584245BB1DB611600003BBD6 /* qrencode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = qrencode.c; sourceTree = "<group>"; };
-		584245BC1DB611600003BBD6 /* qrencode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qrencode.h; sourceTree = "<group>"; };
-		584245BD1DB611600003BBD6 /* qrinput.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = qrinput.c; sourceTree = "<group>"; };
-		584245BE1DB611600003BBD6 /* qrinput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qrinput.h; sourceTree = "<group>"; };
-		584245BF1DB611600003BBD6 /* qrspec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = qrspec.c; sourceTree = "<group>"; };
-		584245C01DB611600003BBD6 /* qrspec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qrspec.h; sourceTree = "<group>"; };
-		584245C11DB611600003BBD6 /* rscode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rscode.c; sourceTree = "<group>"; };
-		584245C21DB611600003BBD6 /* rscode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rscode.h; sourceTree = "<group>"; };
-		584245C31DB611600003BBD6 /* split.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = split.c; sourceTree = "<group>"; };
-		584245C41DB611600003BBD6 /* split.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = split.h; sourceTree = "<group>"; };
 		584245D01DB62F480003BBD6 /* ZKCodeGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZKCodeGenerator.h; sourceTree = "<group>"; };
 		584245D11DB62F480003BBD6 /* ZKCodeGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZKCodeGenerator.m; sourceTree = "<group>"; };
 		584245D31DB631E30003BBD6 /* UIImage+ZKAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ZKAdd.h"; sourceTree = "<group>"; };
@@ -200,7 +176,6 @@
 		5842459A1DB4C6E60003BBD6 /* ThirtPart */ = {
 			isa = PBXGroup;
 			children = (
-				584245B41DB611600003BBD6 /* libqrencode */,
 				584245AC1DB5C0090003BBD6 /* Tool */,
 				5842459B1DB4C6F20003BBD6 /* ViewLayout */,
 			);
@@ -228,29 +203,6 @@
 				584245AE1DB5C0140003BBD6 /* UIImage+Common.m */,
 			);
 			path = Tool;
-			sourceTree = "<group>";
-		};
-		584245B41DB611600003BBD6 /* libqrencode */ = {
-			isa = PBXGroup;
-			children = (
-				584245B91DB611600003BBD6 /* QRCodeGenerator.h */,
-				584245BA1DB611600003BBD6 /* QRCodeGenerator.m */,
-				584245B51DB611600003BBD6 /* bitstream.c */,
-				584245B61DB611600003BBD6 /* bitstream.h */,
-				584245B71DB611600003BBD6 /* mask.c */,
-				584245B81DB611600003BBD6 /* mask.h */,
-				584245BB1DB611600003BBD6 /* qrencode.c */,
-				584245BC1DB611600003BBD6 /* qrencode.h */,
-				584245BD1DB611600003BBD6 /* qrinput.c */,
-				584245BE1DB611600003BBD6 /* qrinput.h */,
-				584245BF1DB611600003BBD6 /* qrspec.c */,
-				584245C01DB611600003BBD6 /* qrspec.h */,
-				584245C11DB611600003BBD6 /* rscode.c */,
-				584245C21DB611600003BBD6 /* rscode.h */,
-				584245C31DB611600003BBD6 /* split.c */,
-				584245C41DB611600003BBD6 /* split.h */,
-			);
-			path = libqrencode;
 			sourceTree = "<group>";
 		};
 		584245CF1DB62F190003BBD6 /* ZKQRImageGenerator */ = {
@@ -397,23 +349,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				584245C81DB611600003BBD6 /* qrencode.c in Sources */,
 				584245D21DB62F480003BBD6 /* ZKCodeGenerator.m in Sources */,
 				584245B31DB5C9410003BBD6 /* ZKConfig.m in Sources */,
-				584245C91DB611600003BBD6 /* qrinput.c in Sources */,
 				584245631DB4C0CF0003BBD6 /* AppDelegate.m in Sources */,
-				584245CC1DB611600003BBD6 /* split.c in Sources */,
 				584245A01DB4C6F20003BBD6 /* UIView+AutoLayout.m in Sources */,
 				584245AA1DB4CEF40003BBD6 /* ZKMainViewController.m in Sources */,
 				584245601DB4C0CF0003BBD6 /* main.m in Sources */,
-				584245C61DB611600003BBD6 /* mask.c in Sources */,
 				584245D51DB631E30003BBD6 /* UIImage+ZKAdd.m in Sources */,
 				584245AF1DB5C0140003BBD6 /* UIImage+Common.m in Sources */,
 				584245A11DB4C6F20003BBD6 /* UIView+ZKCommon.m in Sources */,
-				584245C51DB611600003BBD6 /* bitstream.c in Sources */,
-				584245CA1DB611600003BBD6 /* qrspec.c in Sources */,
-				584245C71DB611600003BBD6 /* QRCodeGenerator.m in Sources */,
-				584245CB1DB611600003BBD6 /* rscode.c in Sources */,
 				584245951DB4C1660003BBD6 /* ZKScanViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
