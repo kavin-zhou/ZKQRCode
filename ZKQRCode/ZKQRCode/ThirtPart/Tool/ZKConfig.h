@@ -32,8 +32,6 @@ extern NSString *const UserDefaultKey_LoginUser;
 extern NSString *const UserDefaultKey_LoginResult;
 extern NSString *const Notification_LoginSuccess;
 extern NSString *const UserDefaultKey_timeDifference;
-extern NSString *const Notification_WillEnterForeground;
-extern NSString *const Notification_DidEnterBackground;
 
 
 

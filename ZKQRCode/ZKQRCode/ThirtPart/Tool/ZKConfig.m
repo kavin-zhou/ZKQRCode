@@ -16,5 +16,3 @@ NSString *const UserDefaultKey_LoginUser = @"UserDefaultKey_LoginUser";
 NSString *const UserDefaultKey_LoginResult = @"UserDefaultKey_LoginResult";
 NSString *const Notification_LoginSuccess = @"Notification_LoginSuccess";
 NSString *const UserDefaultKey_timeDifference = @"UserDefaultKey_timeDifference";
-NSString *const Notification_WillEnterForeground = @"Notification_WillEnterForeground";
-NSString *const Notification_DidEnterBackground = @"Notification_DidEnterBackground";

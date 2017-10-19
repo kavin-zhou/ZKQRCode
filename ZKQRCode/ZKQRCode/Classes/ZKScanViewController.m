@@ -8,19 +8,14 @@
 
 #import "ZKScanViewController.h"
 #import "ZKQRCodeTool.h"
-
-#define HollowRect   (CGRect){kLeftRightMargin, 120.f*WindowZoomScale, SCREEN_WIDTH-kLeftRightMargin*2, SCREEN_WIDTH-kLeftRightMargin*2}
+#import "ZKQRScanView.h"
 
 @interface ZKScanViewController () <UIAlertViewDelegate, AVCaptureMetadataOutputObjectsDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (nonatomic, strong) AVCaptureSession *session;
-@property (nonatomic, strong) UIView           *maskView;
-@property (nonatomic, strong) UIView           *scanWindow;
-@property (nonatomic, strong) UIImageView      *scanNetImageView;
+@property (nonatomic, strong) ZKQRScanView *scanView;
 
 @end
-
-static const CGFloat kLeftRightMargin = 40.f;
 
 @implementation ZKScanViewController
 
@@ -28,27 +23,18 @@ static const CGFloat kLeftRightMargin = 40.f;
     [super viewDidLoad];
     [self setupViews];
     [self beginScanning];
-    [self addObserver];
-}
-
-- (void)addObserver {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWillEnterForeground) name:Notification_WillEnterForeground object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeAnimation) name:Notification_DidEnterBackground object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    // 开始扫描动画
-    [self startAnimation];
+    [_scanView startAnimation];
 }
 
 - (void)setupViews {
     self.navigationController.navigationBar.hidden = YES;
-    
-    [self setupMaskView];
+    _scanView = [ZKQRScanView showInView:self.view];
     [self setupBottomBar];
     [self setupNavView];
-    [self setupScanWindowView];
 }
 
 -(void)setupNavView {
@@ -80,27 +66,6 @@ static const CGFloat kLeftRightMargin = 40.f;
     [flashBtn addTarget:self action:@selector(openFlash:) forControlEvents:UIControlEventTouchUpInside];
 }
 
-- (void)setupMaskView {
-    _maskView = [[UIView alloc] init];
-    _maskView.backgroundColor = [UIColor clearColor];
-    _maskView.frame = [UIScreen mainScreen].bounds;
-    [self.view addSubview:_maskView];
-    
-    // 构建镂空效果
-    UIBezierPath *path = [UIBezierPath bezierPathWithRect:_maskView.bounds];
-    
-    UIBezierPath *hollowPath = [UIBezierPath bezierPathWithRect:HollowRect];
-    [path appendPath:hollowPath];
-    [path setUsesEvenOddFillRule:YES];
-    
-    CAShapeLayer *shapeLayer = [CAShapeLayer layer];
-    shapeLayer.path = path.CGPath;
-    shapeLayer.fillRule = kCAFillRuleEvenOdd;
-    shapeLayer.fillColor = [[UIColor blackColor] colorWithAlphaComponent:.6].CGColor;
-    
-    [_maskView.layer addSublayer:shapeLayer];
-}
-
 - (void)setupBottomBar {
     UIView *bottomBar = [[UIView alloc] init];
     bottomBar.backgroundColor = [UIColor clearColor];
@@ -125,43 +90,6 @@ static const CGFloat kLeftRightMargin = 40.f;
     myCodeBtn.centerX = bottomBar.centerX;
     myCodeBtn.top = CGRectGetMaxY(tipLabel.frame)+5.f;
     [myCodeBtn addTarget:self action:@selector(myCodeBtnClick) forControlEvents:UIControlEventTouchUpInside];
-}
-
-- (void)setupScanWindowView {
-    _scanWindow = [[UIView alloc] init];
-    _scanWindow.clipsToBounds = YES;
-    [self.view addSubview:_scanWindow];
-    _scanWindow.frame = HollowRect;
-    
-    UIImageView *topLeft = [[UIImageView alloc] init];
-    [_scanWindow addSubview:topLeft];
-    topLeft.image = [UIImage imageNamed:@"scan_1"];
-    topLeft.size = (CGSize){19.f, 19.f};
-
-    UIImageView *topRight = [[UIImageView alloc] init];
-    [_scanWindow addSubview:topRight];
-    topRight.image = [UIImage imageNamed:@"scan_2"];
-    topRight.size = topLeft.size;
-    topRight.right = CGRectGetWidth(_scanWindow.frame);
-
-    UIImageView *bottomLeft = [[UIImageView alloc] init];
-    [_scanWindow addSubview:bottomLeft];
-    bottomLeft.image = [UIImage imageNamed:@"scan_3"];
-    bottomLeft.size = topLeft.size;
-    bottomLeft.bottom = CGRectGetHeight(_scanWindow.frame)+2.f;
-    
-    UIImageView *bottomRight = [[UIImageView alloc] init];
-    [_scanWindow addSubview:bottomRight];
-    bottomRight.image = [UIImage imageNamed:@"scan_4"];
-    bottomRight.size = topLeft.size;
-    bottomRight.bottom = CGRectGetHeight(_scanWindow.frame)+2.f;
-    bottomRight.right = CGRectGetWidth(_scanWindow.frame);
-    
-    _scanNetImageView = [[UIImageView alloc] init];
-    [_scanWindow addSubview:_scanNetImageView];
-    _scanNetImageView.size = _scanWindow.bounds.size;
-    _scanNetImageView.bottom = 0;
-    _scanNetImageView.image = [UIImage imageNamed:@"scan_net"];
 }
 
 - (void)beginScanning {
@@ -231,14 +159,6 @@ static const CGFloat kLeftRightMargin = 40.f;
     }
 }
 
-#pragma mark - Noti
-
-- (void)handleWillEnterForeground {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self startAnimation];
-    });
-}
-
 #pragma mark - imagePickerController delegate
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
@@ -273,51 +193,6 @@ static const CGFloat kLeftRightMargin = 40.f;
     NSLog(@"我的二维码");
 }
 
-#pragma mark 开始动画
-
-- (void)startAnimation {
-    CAAnimation *anim = [_scanNetImageView.layer animationForKey:@"groupAnimation"];
-    if (anim) {
-        /**
-         // 1. 将动画的时间偏移量作为暂停时的时间点
-         CFTimeInterval pauseTime = _scanNetImageView.layer.timeOffset;
-         // 2. 根据媒体时间计算出准确的启动动画时间，对之前暂停动画的时间进行修正
-         CFTimeInterval beginTime = CACurrentMediaTime() - pauseTime;
-         // 3. 要把偏移时间清零
-         [_scanNetImageView.layer setTimeOffset:0.0];
-         // 4. 设置图层的开始动画时间
-         [_scanNetImageView.layer setBeginTime:beginTime];
-         [_scanNetImageView.layer setSpeed:2.0];
-         */
-    }
-    else {
-        CABasicAnimation *scanNetAnimation = [CABasicAnimation animation];
-        scanNetAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
-        scanNetAnimation.keyPath = @"transform.translation.y";
-        scanNetAnimation.byValue = @(HollowRect.size.height);
-        
-        CABasicAnimation *alphaAnimation = [CABasicAnimation animation];
-        alphaAnimation.beginTime = 1.7;
-        alphaAnimation.duration = 0.3;
-        alphaAnimation.keyPath = @"opacity";
-        alphaAnimation.fromValue = @(1.f);
-        alphaAnimation.toValue = @(0);
-        
-        CAAnimationGroup *group = [CAAnimationGroup animation];
-        group.animations = @[scanNetAnimation, alphaAnimation];
-        group.duration = 2.0;
-        group.repeatCount = MAXFLOAT;
-        group.fillMode = kCAFillModeForwards;
-        group.removedOnCompletion = NO;
-        
-        [_scanNetImageView.layer addAnimation:group forKey:@"groupAnimation"];
-    }
-}
-
-- (void)removeAnimation {
-    [_scanNetImageView.layer removeAllAnimations];
-}
-
 #pragma mark - 获取扫描区域的比例关系
 
 - (CGRect)getEffectiveRectWithScanRect:(CGRect)scanRect defaultRect:(CGRect)defaultRect {
@@ -348,7 +223,8 @@ static const CGFloat kLeftRightMargin = 40.f;
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 0) {
         [self disMiss];
-    } else if (buttonIndex == 1) {
+    }
+    else if (buttonIndex == 1) {
         [_session startRunning];
     }
 }

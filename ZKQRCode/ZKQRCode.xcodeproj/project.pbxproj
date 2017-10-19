@@ -19,6 +19,7 @@
 		584245B31DB5C9410003BBD6 /* ZKConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245B11DB5C9410003BBD6 /* ZKConfig.m */; };
 		584245D51DB631E30003BBD6 /* UIImage+ZKAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 584245D41DB631E30003BBD6 /* UIImage+ZKAdd.m */; };
 		587B05411F97223B003AFA95 /* ZKQRCodeTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 587B05401F97223B003AFA95 /* ZKQRCodeTool.m */; };
+		58A341C71F976E0300D5F724 /* ZKQRScanView.m in Sources */ = {isa = PBXBuildFile; fileRef = 58A341C61F976E0300D5F724 /* ZKQRScanView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,8 @@
 		584245D41DB631E30003BBD6 /* UIImage+ZKAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ZKAdd.m"; sourceTree = "<group>"; };
 		587B053F1F97223B003AFA95 /* ZKQRCodeTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZKQRCodeTool.h; sourceTree = "<group>"; };
 		587B05401F97223B003AFA95 /* ZKQRCodeTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZKQRCodeTool.m; sourceTree = "<group>"; };
+		58A341C51F976E0300D5F724 /* ZKQRScanView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZKQRScanView.h; sourceTree = "<group>"; };
+		58A341C61F976E0300D5F724 /* ZKQRScanView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZKQRScanView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +167,8 @@
 				584245931DB4C1660003BBD6 /* ZKScanViewController.m */,
 				587B053F1F97223B003AFA95 /* ZKQRCodeTool.h */,
 				587B05401F97223B003AFA95 /* ZKQRCodeTool.m */,
+				58A341C51F976E0300D5F724 /* ZKQRScanView.h */,
+				58A341C61F976E0300D5F724 /* ZKQRScanView.m */,
 				584245CF1DB62F190003BBD6 /* ZKQRImageGenerator */,
 			);
 			path = Classes;
@@ -342,6 +347,7 @@
 				584245B31DB5C9410003BBD6 /* ZKConfig.m in Sources */,
 				584245631DB4C0CF0003BBD6 /* AppDelegate.m in Sources */,
 				587B05411F97223B003AFA95 /* ZKQRCodeTool.m in Sources */,
+				58A341C71F976E0300D5F724 /* ZKQRScanView.m in Sources */,
 				584245AA1DB4CEF40003BBD6 /* ZKMainViewController.m in Sources */,
 				584245601DB4C0CF0003BBD6 /* main.m in Sources */,
 				584245D51DB631E30003BBD6 /* UIImage+ZKAdd.m in Sources */,

@@ -16,8 +16,7 @@
 @implementation AppDelegate
 
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     _window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     _window.backgroundColor = [UIColor whiteColor];
     [_window makeKeyAndVisible];
@@ -27,16 +26,6 @@
     _window.rootViewController = navc;
     
     return YES;
-}
-
-- (void)applicationWillEnterForeground:(UIApplication *)application
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:Notification_WillEnterForeground object:nil];
-}
-
-- (void)applicationDidEnterBackground:(UIApplication *)application
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:Notification_DidEnterBackground object:nil];
 }
 
 @end
